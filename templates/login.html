@@ -1,0 +1,15 @@
+{% extends "base_page.html" %}
+
+{% block title%}URL Shortener{% endblock %}
+
+{% block content %}
+{% if can_be_modified %}
+<form method="post">
+    <label for="password">Enter password:</label>
+    <input id="password" name="password" type="password">
+    <input type="submit">
+</form>
+{% else %}
+<p>This URL cannot be modified.</p>
+{% endif %}
+{% endblock %}

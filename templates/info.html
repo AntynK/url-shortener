@@ -1,0 +1,8 @@
+{% extends "base_page.html" %}
+
+{% block title%}Short URL Info{% endblock %}
+
+{% block content %}
+<p>Short url: <a href={{short_url}}>{{short_url}}</a> leads to <a href={{url}}>{{url}}</a></p>
+<p>This short URL was created on: {{created_on}}</p>
+{% endblock %}

@@ -1,0 +1,8 @@
+{% extends "base_page.html" %}
+
+{% block title%}URL Successfully Shortened{% endblock %}
+
+{% block content %}
+<p>Successfully created short url for: <a href={{url}}>{{url}}</a>, new short url is: <a
+    href={{short_url}}>{{short_url}}</a></p>
+{% endblock %}

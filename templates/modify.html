@@ -1,0 +1,20 @@
+{% extends "base_page.html" %}
+
+{% block title%}Modify short URL{% endblock %}
+
+{% block content %}
+<form method="post">
+    <label for="url-input">Change URL:</label>
+    <input type="text" id="url-input" value={{url}} name="url">
+    <input type="submit">
+    <!-- <br>
+    <h1>Change password</h1>
+    <label for="password">Enter old password:</label>
+    <input type="password" id="password-input" name="old-password">
+    <br>
+    <br>
+    <label for="new-password-input">Enter new password:</label>
+    <input type="password" id="new-password-input" name="new-password">
+    <input type="submit"> -->
+</form>
+{% endblock %}

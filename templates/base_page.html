@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="description" content="Free URL shortener">
+    <meta name="keywords" content="short URL, URL shortener">
+    <meta name="author" content="Andriy Karandashov">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href={{url_for('static', filename='style.css' )}}>
+    <title>{% block title%}{% endblock %}</title>
+    <script>
+        function showMessage(text) {
+            alert(text);
+        }
+    </script>
+</head>
+
+<header id="navbar">
+    <h1><a href="/" id="navbar-link">URL Shortener</a></h1>
+</header>
+
+<body>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    <div id="message-container">
+        {% for category, message in messages %}
+            {% if category == "error" %}
+                <p id="error-message">{{ message }}</p>
+            {% else %}
+                <p id="info-message">{{ message }}</p>
+            {% endif %}
+        {% endfor %}
+    </div>
+    {% endif %}
+    {% endwith %}
+    <div id="content">
+        {% block content %} {% endblock%}
+    </div>
+</body>
