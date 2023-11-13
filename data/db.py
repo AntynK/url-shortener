@@ -18,9 +18,12 @@ DB_PATH = Path("urls.db")
 
 class DB:
     def __init__(self) -> None:
-        if not DB_PATH.exists():
-            self._create_table()
         self.__connection = sqlite3.connect(DB_PATH)
+        self.__connection.execute(
+            "CREATE TABLE IF NOT EXISTS urls (url TEXT, url_id INT, created DATETIME, password BINARY, can_be_modified BOOL)"
+        )
+        self.__connection.commit()
+
         self.__connection.row_factory = sqlite3.Row
 
     def insert(self, url: str, password: bytes, can_be_modified: bool) -> int:
@@ -63,14 +66,6 @@ class DB:
             res = [0]
 
         return res[0]
-
-    def _create_table(self) -> None:
-        self.__connection = sqlite3.connect(DB_PATH)
-        self.__connection.execute(
-            "CREATE TABLE urls (url TEXT, url_id INT, created DATETIME, password BINARY, can_be_modified BOOL)"
-        )
-        self.__connection.commit()
-        self.__connection.close()
 
     def __enter__(self):
         return self
