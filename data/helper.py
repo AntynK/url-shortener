@@ -1,4 +1,13 @@
+from flask import request
 from bcrypt import hashpw, checkpw, gensalt
+
+
+def get_host_name() -> str:
+    return f"http://{request.host}"
+
+
+def create_complete_url(short_url: str):
+    return f"{get_host_name()}/{short_url}"
 
 
 def convert_integer_id(url_id: int) -> str:

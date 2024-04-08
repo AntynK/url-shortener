@@ -5,12 +5,20 @@ import secrets
 from flask import Flask, render_template, redirect, request, flash, session
 
 from data.helper import (
-    convert_integer_id,
     convert_string_id,
     hash_password,
     compare_password,
 )
-from data.db import DB
+from data.routes import (
+    show_404_error_page,
+    show_info_page,
+    show_modify_page,
+    show_login_page,
+    show_succes_page,
+    show_already_exists_error_page,
+)
+
+from data.db import DB, URLEntry
 
 from config import HOST_NAME, HOST_PORT
 
@@ -19,31 +27,20 @@ app = Flask(__name__)
 app.secret_key = secrets.token_hex(32)
 
 
-def get_host_name() -> str:
-    return f"http://{request.host}"
-
-
-def convert_id_to_short_url(url_id: int) -> str:
-    return f"{get_host_name()}/{convert_integer_id(url_id)}"
-
-
-def add_url(url: str, password: str) -> str:
+def add_url(url: str, password: str):
     if re.match("^http", url) is None:
         url = f"https://{url}"
 
     with DB() as db:
         if url in db.get_all_urls():
-            url_id = db.get_id_by_url(url)
-            short_url = convert_id_to_short_url(url_id)
-            return render_template(
-                "already_exists_error.html", url=url, short_url=short_url
-            )
-        can_be_modified = len(password) != 0
-        url_id = db.insert(url, hash_password(password), can_be_modified)
+            url_entry = db.get_url_entry_by_long_url(url)
+            return show_already_exists_error_page(url_entry)
 
-    short_url = convert_id_to_short_url(url_id)
+        new_url_entry = URLEntry(url=url, password=hash_password(password))
+        new_url_entry.can_be_modified = len(password) != 0
+        db.insert(new_url_entry)
 
-    return render_template("success.html", url=url, short_url=short_url)
+    return show_succes_page(new_url_entry)
 
 
 @app.route("/", methods=["POST", "GET"])
@@ -60,11 +57,9 @@ def route_to_url(short_url: str):
     try:
         with DB() as db:
             url_id = convert_string_id(short_url)
-            url_entry = db.get_url_entry(url_id)
+            url_entry = db.get_url_entry_by_id(url_id)
     except (TypeError, ValueError):
-        return render_template(
-            "404_error.html", short_url=f"{get_host_name()}/{short_url}"
-        )
+        return show_404_error_page(short_url)
 
     return redirect(url_entry.url)
 
@@ -74,18 +69,11 @@ def short_url_info(short_url: str):
     try:
         with DB() as db:
             url_id = convert_string_id(short_url)
-            url_entry = db.get_url_entry(url_id)
+            url_entry = db.get_url_entry_by_id(url_id)
     except (TypeError, ValueError):
-        return render_template(
-            "404_error.html", short_url=f"{get_host_name()}/{short_url}"
-        )
+        return show_404_error_page(short_url)
 
-    return render_template(
-        "info.html",
-        short_url=f"{get_host_name()}/{short_url}",
-        url=url_entry.url,
-        created_on=url_entry.created,
-    )
+    return show_info_page(url_entry)
 
 
 @app.route("/<short_url>/modify", methods=["GET", "POST"])
@@ -93,11 +81,9 @@ def modify_short_url(short_url: str):
     try:
         with DB() as db:
             url_id = convert_string_id(short_url)
-            url_entry = db.get_url_entry(url_id)
+            url_entry = db.get_url_entry_by_id(url_id)
     except (TypeError, ValueError):
-        return render_template(
-            "404_error.html", short_url=f"{get_host_name()}/{short_url}"
-        )
+        return show_404_error_page(short_url)
     if url_entry.password != session.get("password"):
         return redirect("login")
 
@@ -112,9 +98,7 @@ def modify_short_url(short_url: str):
         else:
             flash("URL is the same.", "error")
 
-    return render_template(
-        "modify.html", can_be_modified=url_entry.can_be_modified, url=url_entry.url
-    )
+    return show_modify_page(url_entry)
 
 
 @app.route("/<short_url>/login", methods=["GET", "POST"])
@@ -122,11 +106,9 @@ def login(short_url: str):
     try:
         with DB() as db:
             url_id = convert_string_id(short_url)
-            url_entry = db.get_url_entry(url_id)
+            url_entry = db.get_url_entry_by_id(url_id)
     except (TypeError, ValueError):
-        return render_template(
-            "404_error.html", short_url=f"{get_host_name()}/{short_url}"
-        )
+        return show_404_error_page(short_url)
 
     if request.method == "POST":
         entered_password = request.form["password"]
@@ -136,7 +118,7 @@ def login(short_url: str):
             return redirect("modify")
         flash("Wrong password!", "error")
 
-    return render_template("login.html", can_be_modified=url_entry.can_be_modified)
+    return show_login_page(url_entry)
 
 
 if __name__ == "__main__":
