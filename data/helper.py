@@ -1,5 +1,13 @@
+import re
+
 from flask import request
 from bcrypt import hashpw, checkpw, gensalt
+
+
+def make_valid_url(url: str) -> str:
+    if re.match("^http", url) is None:
+        url = f"https://{url}"
+    return url
 
 
 def get_host_name() -> str:

@@ -1,10 +1,9 @@
-import re
 import secrets
 
-
-from flask import Flask, render_template, redirect, request, flash, session
+from flask import Flask, redirect, request, flash, session
 
 from data.helper import (
+    make_valid_url,
     convert_string_id,
     hash_password,
     compare_password,
@@ -16,6 +15,7 @@ from data.routes import (
     show_login_page,
     show_succes_page,
     show_already_exists_error_page,
+    show_index,
 )
 
 from data.db import DB, URLEntry
@@ -28,8 +28,11 @@ app.secret_key = secrets.token_hex(32)
 
 
 def add_url(url: str, password: str):
-    if re.match("^http", url) is None:
-        url = f"https://{url}"
+    if not url:
+        flash("URL cannot be empty.", "error")
+        return show_index()
+
+    url = make_valid_url(url)
 
     with DB() as db:
         if url in db.get_all_urls():
@@ -43,13 +46,49 @@ def add_url(url: str, password: str):
     return show_succes_page(new_url_entry)
 
 
+def update_url(form: dict, url_entry: URLEntry):
+    new_url = form.get("url")
+    if not new_url:
+        flash("New URL cannot be empty.", "error")
+    elif new_url != url_entry.url:
+        url_entry.url = make_valid_url(new_url)
+        with DB() as db:
+            db.update_url_entry(url_entry)
+        flash("Successfully changed URL.", "info")
+
+
+def update_password(form: dict, url_entry: URLEntry):
+    old_password: str = form.get("old-password", "")
+    new_password: str = form.get("new-password", "")
+    new_password_confirm: str = form.get("new-password-confirm", "")
+
+    if not old_password:
+        return
+
+    if not new_password or not new_password_confirm:
+        flash("New password cannot be empty.", "error")
+        return
+
+    if new_password != new_password_confirm:
+        flash("Passwords don't match.", "error")
+        return
+
+    if compare_password(old_password, url_entry.password):
+        url_entry.password = hash_password(new_password)
+        with DB() as db:
+            db.update_url_entry(url_entry)
+        flash("Successfully changed password.", "info")
+    else:
+        flash("Wrong password.", "error")
+
+
 @app.route("/", methods=["POST", "GET"])
 def index():
     if request.method == "POST":
         form = request.form
-        return add_url(form["long-url"], form["password"])
+        return add_url(form.get("long-url", ""), form.get("password", ""))
 
-    return render_template("index.html")
+    return show_index()
 
 
 @app.route("/<short_url>")
@@ -89,14 +128,8 @@ def modify_short_url(short_url: str):
 
     if request.method == "POST":
         form = request.form
-
-        if form["url"] != url_entry.url:
-            url_entry.url = form["url"]
-            with DB() as db:
-                db.update_url_entry(url_entry)
-            flash("Successfully changed URL.", "info")
-        else:
-            flash("URL is the same.", "error")
+        update_url(form, url_entry)
+        update_password(form, url_entry)
 
     return show_modify_page(url_entry)
 
@@ -111,7 +144,7 @@ def login(short_url: str):
         return show_404_error_page(short_url)
 
     if request.method == "POST":
-        entered_password = request.form["password"]
+        entered_password = request.form.get("password", "")
 
         if compare_password(entered_password, url_entry.password):
             session["password"] = url_entry.password
@@ -122,4 +155,4 @@ def login(short_url: str):
 
 
 if __name__ == "__main__":
-    app.run(HOST_NAME, HOST_PORT)
+    app.run(HOST_NAME, HOST_PORT, debug=True)

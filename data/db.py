@@ -72,8 +72,8 @@ class DB:
         cursor = self.__connection.cursor()
         url_id = convert_string_id(url_entry.short_url)
         cursor.execute(
-            "UPDATE urls SET url=? WHERE url_id=?",
-            (url_entry.url, url_id),
+            "UPDATE urls SET url=?, password=?, can_be_modified=? WHERE url_id=?",
+            (url_entry.url, url_entry.password, url_entry.can_be_modified, url_id),
         )
         self.__connection.commit()
 
