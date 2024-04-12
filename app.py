@@ -1,4 +1,5 @@
 import secrets
+from datetime import datetime
 
 from flask import Flask, redirect, request, flash, session
 
@@ -69,6 +70,10 @@ def update_password(form: dict, url_entry: URLEntry):
         flash("New password cannot be empty.", "error")
         return
 
+    if new_password == old_password:
+        flash("New password is the same as old one.", "error")
+        return
+
     if new_password != new_password_confirm:
         flash("Passwords don't match.", "error")
         return
@@ -76,7 +81,7 @@ def update_password(form: dict, url_entry: URLEntry):
     if compare_password(old_password, url_entry.password):
         url_entry.password = hash_password(new_password)
         with DB() as db:
-            db.update_url_entry(url_entry)
+            db.update_url_entry(url_entry, False)
         flash("Successfully changed password.", "info")
     else:
         flash("Wrong password.", "error")
@@ -152,6 +157,12 @@ def login(short_url: str):
         flash("Wrong password!", "error")
 
     return show_login_page(url_entry)
+
+
+@app.template_filter("to_datetime")
+def to_datetime(timestamp: float):
+    date = datetime.fromtimestamp(timestamp)
+    return date.strftime("%A the %dth of %B %Y at %H:%M:%S")
 
 
 if __name__ == "__main__":

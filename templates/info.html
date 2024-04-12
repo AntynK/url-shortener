@@ -4,5 +4,10 @@
 
 {% block content %}
 <p>Short url: <a href={{short_url}}>{{short_url}}</a> leads to <a href={{url}}>{{url}}</a></p>
-<p>This short URL was created on: {{created_on}}</p>
+<p>This short URL was created on: {{created_on|to_datetime}}</p>
+
+{% if last_modified != 0 %}
+<p>This short URL was last modified on: {{last_modified|to_datetime}}</p>
+{% endif %}
+
 {% endblock %}

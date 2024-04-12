@@ -1,4 +1,5 @@
 from typing import Union
+from datetime import datetime
 
 from flask import render_template
 
@@ -45,6 +46,7 @@ def show_info_page(url_entry: URLEntry) -> response:
         short_url=create_complete_url(url_entry.short_url),
         url=url_entry.url,
         created_on=url_entry.created,
+        last_modified=url_entry.last_modified
     )
 
 
