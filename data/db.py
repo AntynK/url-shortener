@@ -39,7 +39,7 @@ class DB:
 
     def insert(self, new_url_entry: URLEntry):
         if not new_url_entry.url:
-            raise ValueError("'url' must be non empty string!")
+            raise ValueError("'new_url_entry.url' must be non empty string.")
         new_url_entry.created = datetime.now().timestamp()
         self.__connection.execute(
             "INSERT INTO urls (url, created, password, can_be_modified, last_modified) VALUES (?,?,?,?,?)",
@@ -68,11 +68,6 @@ class DB:
         cursor.execute("SELECT * FROM urls WHERE url_id=?", [url_id])
         return self._convert_fetched_data(cursor.fetchone())
 
-    def get_url_entry_by_long_url(self, long_url: str) -> URLEntry:
-        cursor = self.__connection.cursor()
-        cursor.execute("SELECT * FROM urls WHERE url=?", [long_url])
-        return self._convert_fetched_data(cursor.fetchone())
-
     def update_url_entry(self, url_entry: URLEntry, save_update_timestamp: bool = True) -> None:
         cursor = self.__connection.cursor()
         url_id = convert_string_id(url_entry.short_url)
@@ -90,11 +85,6 @@ class DB:
             ),
         )
         self.__connection.commit()
-
-    def get_all_urls(self) -> list[str]:
-        cursor = self.__connection.cursor()
-        cursor.execute("SELECT url FROM urls")
-        return [url[0] for url in cursor.fetchall()]
 
     def get_last_url_id(self) -> int:
         cursor = self.__connection.cursor()

@@ -22,18 +22,6 @@ def show_404_error_page(short_url: str) -> response:
         404,
     )
 
-
-def show_already_exists_error_page(url_entry: URLEntry) -> response:
-    return (
-        render_template(
-            "already_exists_error.html",
-            url=url_entry.url,
-            short_url=url_entry.short_url,
-        ),
-        409,
-    )
-
-
 def show_succes_page(new_url_entry: URLEntry) -> response:
     return render_template(
         "success.html", url=new_url_entry.url, short_url=new_url_entry.short_url

@@ -15,7 +15,6 @@ from data.routes import (
     show_modify_page,
     show_login_page,
     show_succes_page,
-    show_already_exists_error_page,
     show_index,
 )
 
@@ -36,10 +35,6 @@ def add_url(url: str, password: str):
     url = make_valid_url(url)
 
     with DB() as db:
-        if url in db.get_all_urls():
-            url_entry = db.get_url_entry_by_long_url(url)
-            return show_already_exists_error_page(url_entry)
-
         new_url_entry = URLEntry(url=url, password=hash_password(password))
         new_url_entry.can_be_modified = len(password) != 0
         db.insert(new_url_entry)
