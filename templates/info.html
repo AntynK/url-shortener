@@ -1,13 +1,20 @@
 {% extends "base_page.html" %}
 
-{% block title%}Short URL Info{% endblock %}
+{% block title%}{{ _("Short URL info") }}{% endblock %}
 
 {% block content %}
-<p>Short url: <a href={{short_url}}>{{short_url}}</a> leads to <a href={{url}}>{{url}}</a></p>
-<p>This short URL was created on: {{created_on|to_datetime}}</p>
+
+<p>{{ _("Short URL: %(short_url)s redirects to %(long_url)s.",
+    short_url=short_url,
+    long_url=url) }}
+</p>
+
+{% set datetime = created_on|to_datetime %}
+<p>{{ _("This short URL was created on: %(datetime)s", datetime=datetime) }}</p>
 
 {% if last_modified != 0 %}
-<p>This short URL was last modified on: {{last_modified|to_datetime}}</p>
+{% set datetime = last_modified|to_datetime %}
+<p>{{ _("This short URL was last modified on: %(datetime)s", datetime=datetime)}}</p>
 {% endif %}
 
 {% endblock %}

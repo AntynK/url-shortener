@@ -1,22 +1,25 @@
 {% extends "base_page.html" %}
 
-{% block title%}Modify short URL{% endblock %}
+{% block title%}{{ _("Modify short URL") }}{% endblock %}
 
 {% block content %}
 <form method="post">
-    <label for="url-input">Change URL:</label>
+    <label for="url-input">{{ _("URL:") }}</label>
     <input type="text" id="url-input" value={{url}} name="url">
     <input type="submit">
     <br>
-    <h1>Change password</h1>
-    <label for="password">Enter old password:</label>
+    <h1>{{ _("Change password") }}</h1>
+    <label for="password">{{ _("Old password:") }}</label>
     <input type="password" id="password-input" name="old-password">
     <br>
     <br>
-    <label for="new-password-input">Enter new password:</label>
+    <label for="new-password-input">{{ _("New password:") }}</label>
     <input type="password" id="new-password-input" name="new-password">
-    <label for="new-password-input-confirm">Confirm new password:</label>
+    <br>
+    <br>
+    <label for="new-password-input-confirm">{{ _("Confirm new password:") }}</label>
     <input type="password" id="new-password-input-confirm" name="new-password-confirm">
+    <br>
     <input type="submit">
 </form>
 {% endblock %}

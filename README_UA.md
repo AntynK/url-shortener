@@ -1,6 +1,15 @@
 # Скорочувач посилань
+> [!NOTE]
+> An [English](README.md) version of this document is available.
 
 Це сайт, який дозволяє користувачам створювати короткі посилання.
+
+## Локалізація
+Сайт перекладено двома мовами: українською та англійською. Для локалізації використано модуль [Flask-Babel](https://pypi.org/project/flask-babel/).
+
+> [!NOTE]
+> Сайт автоматично визначає мову користувача на основі налаштувань мови його браузера.
+
 
 ## Можливості
 ### Створення та змінення коротких посилань
@@ -24,7 +33,7 @@
 
 
 ## Встановлення залежностей
-Для запуску потрібно встановити [Flask](https://pypi.org/project/Flask/) та [bcrypt](https://pypi.org/project/bcrypt/).
+Для запуску потрібно встановити [Flask](https://pypi.org/project/Flask/), [Flask-Babel](https://pypi.org/project/flask-babel/) та [bcrypt](https://pypi.org/project/bcrypt/).
 
 > [!IMPORTANT]
 > У вас має бути [Python 3.9](https://www.python.org/) або пізніша версія

@@ -1,6 +1,15 @@
 # URL Shortener
+> [!NOTE]
+> Цей документ має переклад [українською](README_UA.md).
 
 This website is designed for creating short URLs.
+
+
+## Localization
+The website supports two languages: English and Ukrainian. [Flask-Babel](https://pypi.org/project/flask-babel/) is used for localization.
+
+> [!NOTE]
+> The website selects the language based on your browser's selected language.
 
 ## Features
 ### Adding and editing short URLs
@@ -19,11 +28,11 @@ In the **127.0.0.1:5000/<short_url>/modify** page you can not only edit the shor
 > Password must be strong.
 
 ### Viewing information
-By visiting the **127.0.0.1:5000/<short_url>/info** page you can view when details such as when the short URL was created and where it leads.
+By visiting the **127.0.0.1:5000/<short_url>/info** page you can view details such as when the short URL was created and where it redirects.
 
 
 ## Installing dependencies
-The website uses [Flask](https://pypi.org/project/Flask/) and [bcrypt](https://pypi.org/project/bcrypt/).
+The website uses [Flask](https://pypi.org/project/Flask/), [Flask-Babel](https://pypi.org/project/flask-babel/) and [bcrypt](https://pypi.org/project/bcrypt/).
 
 > [!IMPORTANT]
 > [Python 3.9](https://www.python.org/) or later must be installed.

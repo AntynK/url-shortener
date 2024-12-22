@@ -1,0 +1,160 @@
+# Translations template for PROJECT.
+# Copyright (C) 2024 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2024.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2024-12-22 16:53+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.16.0\n"
+
+#: app.py:39
+msgid "URL cannot be empty."
+msgstr ""
+
+#: app.py:45
+msgid "Invalid URL."
+msgstr ""
+
+#: app.py:63
+msgid "New URL cannot be empty."
+msgstr ""
+
+#: app.py:68
+msgid "Successfully changed URL."
+msgstr ""
+
+#: app.py:77
+msgid "Old password cannot be empty."
+msgstr ""
+
+#: app.py:81
+msgid "New password cannot be empty."
+msgstr ""
+
+#: app.py:85
+msgid "New password is the same as old one."
+msgstr ""
+
+#: app.py:89
+msgid "Passwords don't match."
+msgstr ""
+
+#: app.py:96
+msgid "Successfully changed password."
+msgstr ""
+
+#: app.py:98 app.py:168
+msgid "Wrong password."
+msgstr ""
+
+#: templates/403_error.html:3
+msgid "403 Forbidden"
+msgstr ""
+
+#: templates/403_error.html:6
+msgid "This URL cannot be modified."
+msgstr ""
+
+#: templates/404_error.html:3
+msgid "404 Not found"
+msgstr ""
+
+#: templates/404_error.html:6
+#, python-format
+msgid "%(short_url)s does not exist. Check if it is typed correctly."
+msgstr ""
+
+#: templates/base_page.html:19 templates/index.html:3 templates/login.html:3
+msgid "URL Shortener"
+msgstr ""
+
+#: templates/index.html:7
+msgid "Enter URL:"
+msgstr ""
+
+#: templates/index.html:11
+msgid "Enter password (optional):"
+msgstr ""
+
+#: templates/index.html:13
+msgid ""
+"You can modify the URL with a password. If no password is set, the URL "
+"cannot be changed."
+msgstr ""
+
+#: templates/index.html:14
+msgid "To modify short URL enter: &ltshort URL&gt/modify"
+msgstr ""
+
+#: templates/index.html:15
+msgid "To get info about short URL enter: &ltshort URL&gt/info"
+msgstr ""
+
+#: templates/info.html:3
+msgid "Short URL info"
+msgstr ""
+
+#: templates/info.html:7
+#, python-format
+msgid "Short URL: %(short_url)s redirects to %(long_url)s."
+msgstr ""
+
+#: templates/info.html:13
+#, python-format
+msgid "This short URL was created on: %(datetime)s"
+msgstr ""
+
+#: templates/info.html:17
+#, python-format
+msgid "This short URL was last modified on: %(datetime)s"
+msgstr ""
+
+#: templates/login.html:7
+msgid "Enter password:"
+msgstr ""
+
+#: templates/modify.html:3
+msgid "Modify short URL"
+msgstr ""
+
+#: templates/modify.html:7
+msgid "URL:"
+msgstr ""
+
+#: templates/modify.html:11
+msgid "Change password"
+msgstr ""
+
+#: templates/modify.html:12
+msgid "Old password:"
+msgstr ""
+
+#: templates/modify.html:16
+msgid "New password:"
+msgstr ""
+
+#: templates/modify.html:20
+msgid "Confirm new password:"
+msgstr ""
+
+#: templates/success.html:3
+msgid "URL successfully shortened"
+msgstr ""
+
+#: templates/success.html:8
+#, python-format
+msgid ""
+"Successfully created short URL for: %(long_url)s, new short URL is: "
+"%(short_url)s"
+msgstr ""
+

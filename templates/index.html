@@ -1,17 +1,17 @@
 {% extends "base_page.html" %}
 
-{% block title%}URL Shortener{% endblock %}
+{% block title%}{{ _("URL Shortener") }}{% endblock %}
 
 {% block content %}
 <form method="post">
-    <label for="url-input">Enter URL:</label>
+    <label for="url-input">{{ _("Enter URL:") }}</label>
     <input type="text" id="url-input" name="long-url" required>
     <input type="submit">
     <br>
-    <label for="password-input">Enter password(optional):</label>
+    <label for="password-input">{{ _("Enter password (optional):") }}</label>
     <input type="password" id="password-input" name="password">
-    <p>With password you can modify URL, if the password is not set URL cannot be changed.</p>
-    <p>To modify URL enter &ltshort URL&gt/modify</p>
-    <p>To get info about short URL enter &ltshort URL&gt/info</p>
+    <p>{{ _("You can modify the URL with a password. If no password is set, the URL cannot be changed.") }}</p>
+    <p>{{ _("To modify short URL enter: &ltshort URL&gt/modify") }}</p>
+    <p>{{ _("To get info about short URL enter: &ltshort URL&gt/info") }}</p>
 </form>
 {% endblock %}
