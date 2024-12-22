@@ -7,11 +7,17 @@
     <meta name="author" content="Andriy Karandashov">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href={{url_for('static', filename='style.css' )}}>
-    <title>{% block title%}{% endblock %}</title>
+    <title>{% block title %}{% endblock %}</title>
     <script>
-        function showMessage(text) {
-            alert(text);
-        }
+        const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+        fetch('/set_timezone', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ timeZone }),
+        });
     </script>
 </head>
 

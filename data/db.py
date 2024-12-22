@@ -1,5 +1,5 @@
 import sqlite3
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 from dataclasses import dataclass
 
@@ -50,7 +50,7 @@ class DB:
 
         if not url_entry.url:
             raise ValueError("'url_entry.url' must be non empty string.")
-        url_entry.created = datetime.now().timestamp()
+        url_entry.created = datetime.now(timezone.utc).timestamp()
         self.__connection.execute(
             "INSERT INTO urls (url, created, password, can_be_modified, last_modified) VALUES (?,?,?,?,?)",
             (

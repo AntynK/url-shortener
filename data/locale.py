@@ -1,4 +1,4 @@
-from flask import request, Flask
+from flask import request, Flask, session
 from flask_babel import Babel
 
 
@@ -7,9 +7,15 @@ def locale_selector() -> str:
     return language
 
 
-def init_babel(app: Flask) -> None:
-    app.config["BABEL_TRANSLATION_DIRECTORIES"] = "./locale"
-    app.config["BABEL_DEFAULT_LOCALE"] = "en"
+def timezone_selector() -> str:
+    return session.get("timezone", "UTC")
 
+
+def init_babel(app: Flask) -> None:
     babel = Babel()
-    babel.init_app(app, locale_selector=locale_selector)
+    babel.init_app(
+        app,
+        default_translation_directories="./locale/",
+        locale_selector=locale_selector,
+        timezone_selector=timezone_selector,
+    )

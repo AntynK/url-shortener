@@ -1,8 +1,9 @@
 import secrets
 from datetime import datetime
 
+import pytz
 from flask import Flask, redirect, request, flash, session
-from flask_babel import gettext, format_time
+from flask_babel import gettext, format_datetime
 
 from data.helper import (
     make_valid_url,
@@ -173,7 +174,18 @@ def login(short_url: str):
 @app.template_filter("to_datetime")
 def to_datetime(timestamp: float):
     date = datetime.fromtimestamp(timestamp)
-    return format_time(date)
+    return format_datetime(date, format="medium")
+
+
+@app.route("/set_timezone", methods=["POST"])
+def set_timezone():
+    data = request.json
+    user_timezone = data.get("timeZone", "UTC")
+    if user_timezone in pytz.all_timezones:
+        session["timezone"] = user_timezone
+    else:
+        session["timezone"] = "UTC"
+    return "200 OK"
 
 
 if __name__ == "__main__":
