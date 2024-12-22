@@ -9,4 +9,7 @@ def locale_selector() -> str:
 
 def init_babel(app: Flask) -> None:
     app.config["BABEL_TRANSLATION_DIRECTORIES"] = "./locale"
-    babel = Babel(app, locale_selector=locale_selector)
+    app.config["BABEL_DEFAULT_LOCALE"] = "en"
+
+    babel = Babel()
+    babel.init_app(app, locale_selector=locale_selector)
