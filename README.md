@@ -71,6 +71,6 @@ Module [bcrypt](https://pypi.org/project/bcrypt/) is used for hashing.
 
 > [!IMPORTANT]
 > Always use strong passwords. Hashing cannot protect against weak passwords.
->
-> > [!IMPORTANT]
+
+> [!IMPORTANT]
 > Short url is randomly generated.
