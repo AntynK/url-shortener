@@ -3,7 +3,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from dataclasses import dataclass
 
-from data.helper import convert_string_id, convert_integer_id
+from data.helper import generate_short_url
 
 
 @dataclass
@@ -24,7 +24,7 @@ class DB:
         self.__connection = sqlite3.connect(DB_PATH)
         self.__connection.execute(
             """CREATE TABLE IF NOT EXISTS urls (
-                url_id INTEGER PRIMARY KEY NOT NULL,  
+                url_id CHAR(6) PRIMARY KEY NOT NULL,  
                 url TEXT, 
                 created FLOAT, 
                 password BINARY, 
@@ -51,9 +51,11 @@ class DB:
         if not url_entry.url:
             raise ValueError("'url_entry.url' must be non empty string.")
         url_entry.created = datetime.now(timezone.utc).timestamp()
+        url_entry.short_url = generate_short_url()
         self.__connection.execute(
-            "INSERT INTO urls (url, created, password, can_be_modified, last_modified) VALUES (?,?,?,?,?)",
+            "INSERT INTO urls (url_id, url, created, password, can_be_modified, last_modified) VALUES (?,?,?,?,?,?)",
             (
+                url_entry.short_url,
                 url_entry.url,
                 url_entry.created,
                 url_entry.password,
@@ -62,18 +64,25 @@ class DB:
             ),
         )
         self.__connection.commit()
-        short_url = convert_integer_id(self.get_last_url_id())
-        url_entry.short_url = short_url
+
+    def _generate_id(self) -> str:
+        url_id = ""
+        while 1:
+            url_id = generate_short_url()
+            cursor = self.__connection.cursor()
+            cursor.execute("SELECT 1 FROM urls WHERE url_id=?", [url_id])
+            print(cursor.fetchone())
+
+        return url_id
 
     def _convert_fetched_data(self, fetched_data: sqlite3.Row) -> URLEntry:
         url_id, url, created, password, can_be_modified, last_modified = fetched_data
-        short_url = convert_integer_id(url_id)
         url_entry = URLEntry(
-            url, short_url, created, password, bool(can_be_modified), last_modified
+            url, url_id, created, password, bool(can_be_modified), last_modified
         )
         return url_entry
 
-    def get_url_entry_by_id(self, url_id: int) -> URLEntry:
+    def get_url_entry_by_id(self, url_id: str) -> URLEntry:
         cursor = self.__connection.cursor()
         cursor.execute("SELECT * FROM urls WHERE url_id=?", [url_id])
         return self._convert_fetched_data(cursor.fetchone())
@@ -89,7 +98,6 @@ class DB:
             save_update_timestamp (bool, optional): _description_. Defaults to True.
         """
         cursor = self.__connection.cursor()
-        url_id = convert_string_id(url_entry.short_url)
         if save_update_timestamp:
             url_entry.last_modified = datetime.now().timestamp()
 
@@ -100,17 +108,10 @@ class DB:
                 url_entry.password,
                 url_entry.can_be_modified,
                 url_entry.last_modified,
-                url_id,
+                url_entry.short_url,
             ),
         )
         self.__connection.commit()
-
-    def get_last_url_id(self) -> int:
-        cursor = self.__connection.cursor()
-        cursor.execute("SELECT url_id FROM urls ORDER BY url_id DESC")
-        res = cursor.fetchone()[0]
-
-        return 0 if res is None else res
 
     def __enter__(self):
         return self

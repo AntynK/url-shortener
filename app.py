@@ -1,5 +1,6 @@
 import secrets
 from datetime import datetime
+from typing import Union
 
 import pytz
 from flask import Flask, redirect, request, flash, session
@@ -7,7 +8,6 @@ from flask_babel import gettext, format_datetime
 
 from data.helper import (
     make_valid_url,
-    convert_string_id,
     hash_password,
     compare_password,
     validate_url,
@@ -112,8 +112,7 @@ def index():
 def route_to_url(short_url: str):
     try:
         with DB() as db:
-            url_id = convert_string_id(short_url)
-            url_entry = db.get_url_entry_by_id(url_id)
+            url_entry = db.get_url_entry_by_id(short_url)
     except (TypeError, ValueError):
         return show_404_error_page(short_url)
 
@@ -124,8 +123,7 @@ def route_to_url(short_url: str):
 def short_url_info(short_url: str):
     try:
         with DB() as db:
-            url_id = convert_string_id(short_url)
-            url_entry = db.get_url_entry_by_id(url_id)
+            url_entry = db.get_url_entry_by_id(short_url)
     except (TypeError, ValueError):
         return show_404_error_page(short_url)
 
@@ -136,8 +134,7 @@ def short_url_info(short_url: str):
 def modify_short_url(short_url: str):
     try:
         with DB() as db:
-            url_id = convert_string_id(short_url)
-            url_entry = db.get_url_entry_by_id(url_id)
+            url_entry = db.get_url_entry_by_id(short_url)
     except (TypeError, ValueError):
         return show_404_error_page(short_url)
     if url_entry.password != session.get("password"):
@@ -155,8 +152,7 @@ def modify_short_url(short_url: str):
 def login(short_url: str):
     try:
         with DB() as db:
-            url_id = convert_string_id(short_url)
-            url_entry = db.get_url_entry_by_id(url_id)
+            url_entry = db.get_url_entry_by_id(short_url)
     except (TypeError, ValueError):
         return show_404_error_page(short_url)
 
@@ -179,7 +175,10 @@ def to_datetime(timestamp: float):
 
 @app.route("/set_timezone", methods=["POST"])
 def set_timezone():
-    data = request.json
+    data: Union[dict, None] = request.json
+    if data is None:
+        return "400 BAD REQUEST"
+
     user_timezone = data.get("timeZone", "UTC")
     if user_timezone in pytz.all_timezones:
         session["timezone"] = user_timezone

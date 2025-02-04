@@ -1,11 +1,20 @@
 import re
 from urllib.parse import urlparse
+from string import ascii_letters, digits
+from random import choices
 
 from flask import request
 from markupsafe import Markup
 from bcrypt import hashpw, checkpw, gensalt
 
+
 INVALID_CHARACTERS = '<>{}[]`^\\|%#" '
+URL_MAX_SIZE = 6
+
+
+def generate_short_url() -> str:
+    chars = ascii_letters + digits
+    return "".join(choices(chars, k=URL_MAX_SIZE))
 
 
 def make_valid_url(url: str) -> str:
@@ -28,14 +37,6 @@ def get_host_name() -> str:
 
 def create_complete_url(short_url: str):
     return f"{get_host_name()}/{short_url}"
-
-
-def convert_integer_id(url_id: int) -> str:
-    return hex(url_id).replace("0x", "")
-
-
-def convert_string_id(url_id: str) -> int:
-    return int(url_id, base=36)
 
 
 def hash_password(password: str) -> bytes:
